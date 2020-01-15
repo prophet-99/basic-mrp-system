@@ -1,6 +1,7 @@
 package dao;
 
 import entity.Componente;
+import entity.Tiempo;
 import java.util.*;
 
 /**
@@ -10,6 +11,7 @@ import java.util.*;
 public class ComponenteDAO {
 
     private static List<Componente> lstComponentes;
+    private static Tiempo unidadTiempo;
     
     public static boolean insertarComponente(Componente componente){
     
