@@ -98,6 +98,8 @@ public class NNetasLogic {
                    
                     for (Entry<String, Integer> e : lstProd_req.get(i).getCant_prod().entrySet()) {
                        
+                     if(col != 0) break;
+                     
                       if(e != null){
                         XSSFCell celda = sheet1.getRow(1).getCell(i+5);
                         String idt = celda.getStringCellValue().substring(1);
