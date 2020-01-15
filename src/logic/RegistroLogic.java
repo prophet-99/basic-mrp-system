@@ -4,22 +4,22 @@ package logic;
  * @author Alexander Avila <alexanderavilab at gmail.com>
  */
 
+import entity.PMaestro;
 import java.util.*;
 import javax.swing.table.DefaultTableModel;
 public class RegistroLogic {
     
-    public static DefaultTableModel modelRegistroInv(int periodos, int componentes){
+    public static DefaultTableModel modelRegistroInv(PMaestro planMaster){
         
         DefaultTableModel modelo = new DefaultTableModel();
        
         List<String> headersDinam = new ArrayList<>();
-        headersDinam.add("Nivel");
         headersDinam.add("Código");
+        headersDinam.add("Nivel");
         headersDinam.add("Tiempo-Entrega");
         headersDinam.add("Stock Actual");
-        headersDinam.add("Pedidos Pendientes");
         
-        for (int i = 0; i < periodos; i++) {
+        for (int i = 0; i < planMaster.getnPeriodos(); i++) {
             
             headersDinam.add("P" + String.valueOf(i+1));
         }
@@ -30,7 +30,7 @@ public class RegistroLogic {
         
         List<String> bodyDinam = new ArrayList<>();
        
-        for (int i = 0; i < componentes; i++) {
+        for (int i = 0; i < planMaster.getnComponentes(); i++) {
             
             String[] headers = {"C" + String.valueOf(i+1)};
            
@@ -39,4 +39,5 @@ public class RegistroLogic {
        
         return modelo;
     }
+    
 }

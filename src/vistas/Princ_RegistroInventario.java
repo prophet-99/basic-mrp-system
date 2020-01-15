@@ -6,10 +6,14 @@
 package vistas;
 
 import entity.Componente;
-import java.awt.Dimension;
-import javax.swing.ScrollPaneConstants;
+import entity.PMaestro;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.JOptionPane;
 import javax.swing.table.TableColumnModel;
+import logic.ComponenteLogic;
 import logic.NNetasLogic;
+import logic.PMaestroLogic;
 import logic.RegistroLogic;
 
 /**
@@ -23,6 +27,7 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
      */
     
     private static int periodos;
+    private static int componentes;
     
     public Princ_RegistroInventario() {
         initComponents();
@@ -179,17 +184,68 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
     private void jButton_solActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_solActionPerformed
        
         //GENERA PNN Y PNB
-        Componente component = new Componente();
+        PMaestro planM= new PMaestro();
+        planM.setnPeriodos(this.periodos);
+        planM.setnComponentes(this.componentes);
         
-        NNetasLogic.generarReporte(this.periodos, component);
+        for (int i = 0; i < this.componentes; i++) {
+            
+            Componente component = new Componente();
+            component.setNombre((String)jTableInput.getValueAt(i, 0));
+            component.setNivel(Integer.parseInt((String)jTableInput.getValueAt(i, 1)));
+            component.setTiempo_entrega(Integer.parseInt((String)jTableInput.getValueAt(i, 2)));
+            component.setStock_disponible(Integer.parseInt((String)jTableInput.getValueAt(i, 3)));
+            
+            if(JOptionPane.showConfirmDialog(this, "¿Tiene Pedidos pendientes para el componente "+(i+1)+"?")==JOptionPane.OK_OPTION){
+            
+                Integer pedido = Integer.parseInt(
+                                 JOptionPane.showInputDialog(this, "Ingrese el Stock", "1")
+                                 );
+                
+                String periodo = JOptionPane.showInputDialog(this, "Ingrese el Periodo", "1");
+                
+                Map<String, Integer> pedPendiente = new HashMap<>();
+                pedPendiente.put(periodo, pedido);
+                
+                component.setPed_pendientes_recibir(pedPendiente);
+                
+            }
+            
+            ComponenteLogic.insertarComponente(component);
+        }
+        
+        for (int i = 0; i < this.periodos; i++) {
+            
+          if(jTableInput.getValueAt(0, (i+4))!= null){
+              
+                PMaestro pMaestro = new PMaestro();
+                Map<String, Integer> prod_requer = new HashMap<>();
+                prod_requer.put(String.valueOf((i+1)) , 
+                                Integer.parseInt((String)jTableInput.getValueAt(0, (i+4))));
+               
+                pMaestro.setCant_prod(prod_requer);
+                PMaestroLogic.setProd_requer(pMaestro);
+            }else{
+              PMaestroLogic.setProd_requer(null);
+            }
+        
+        }
+        
+        
+        NNetasLogic.generarReporte(planM, ComponenteLogic.getLstComponentes());
     }//GEN-LAST:event_jButton_solActionPerformed
 
     private void jButton_aceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_aceptActionPerformed
         
         this.periodos = Integer.parseInt(jText_Period.getText());
+        this.componentes = Integer.parseInt(jText_comp.getText());
         
+        PMaestro planMaster = new PMaestro();
+        planMaster.setnComponentes(this.componentes);
+        planMaster.setnPeriodos(this.periodos);
         PanelRegistro.setVisible(true);
-        jTableInput.setModel(RegistroLogic.modelRegistroInv(Integer.parseInt(jText_Period.getText()), Integer.parseInt(jText_comp.getText())));
+        
+        jTableInput.setModel(new RegistroLogic().modelRegistroInv(planMaster));
          
         TableColumnModel columnModel = jTableInput.getColumnModel();
 
