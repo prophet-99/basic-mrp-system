@@ -73,6 +73,7 @@ public class NNetasLogic {
            
            //SECCION de Headers secundarios(necBrutas-recProgramdas....)
            XSSFRow nb = sheet1.createRow(col + patron);
+           
            //crea Plazo
            cell = nb.createCell(0);
            cell.setCellValue(lstComponentes.get(col).getTiempo_entrega());
@@ -85,7 +86,8 @@ public class NNetasLogic {
            //crea codigo articulo
            cell = nb.createCell(3);
            cell.setCellValue(lstComponentes.get(col).getNombre());
-           //crea HEADER SECUNDARIO necesidades brutas
+           
+           //SECCION NECESIDADES BRUTAS
            cell = nb.createCell(4);
            cell.setCellValue(rowHeaders[0]);
            //crea los datos del plan maestro(periodo)
@@ -112,23 +114,33 @@ public class NNetasLogic {
                     }
                 }
             }
-           
+           //SECCION RECEPCIONES PROG
            XSSFRow ex = sheet1.createRow(col + (++patron));
            cell = ex.createCell(4);
            cell.setCellValue(rowHeaders[1]);
            
+           //SECCION DISPONIBLE ESTIM
            XSSFRow de = sheet1.createRow(col + (++patron));
            cell = de.createCell(4);
            cell.setCellValue(rowHeaders[2]);
+           //SETEANDO LA DATA PARA OPERAR
+            for (int i = 0; i < rowHeaders.length; i++) {
+                
+                cell = de.createCell(5);
+                cell.setCellFormula("B" + (col+patron-1));
+            }
            
+           //SECCION NEC NETAS
            XSSFRow nn = sheet1.createRow(col + (++patron));
            cell = nn.createCell(4);
            cell.setCellValue(rowHeaders[3]);
            
+           //SECCION RECEPC ORDEN
            XSSFRow ro = sheet1.createRow(col + (++patron));
            cell = ro.createCell(4);
            cell.setCellValue(rowHeaders[4]);
            
+           //SECCION LANZ ORDEN
            XSSFRow lo = sheet1.createRow(col + (++patron));
            cell = lo.createCell(4);
            cell.setCellValue(rowHeaders[5]);
@@ -145,5 +157,5 @@ public class NNetasLogic {
         
         return true;
     }
-   
+
 }
