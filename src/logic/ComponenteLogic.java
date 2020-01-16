@@ -19,4 +19,9 @@ public class ComponenteLogic {
     
         return ComponenteDAO.getLstComponentes();
     }
+    
+    public static void resetData(){
+    
+        ComponenteDAO.resetData();
+    }
 }

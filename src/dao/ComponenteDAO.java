@@ -23,4 +23,9 @@ public class ComponenteDAO {
         return lstComponentes;
     }
     
+     public static void resetData(){
+    
+        lstComponentes = new ArrayList<>();
+    }
+    
 }

@@ -21,4 +21,9 @@ public class PMaestroDAO {
     
         return lstPMaestro;
     }
+    
+    public static void resetData(){
+    
+        lstPMaestro = new ArrayList<>();
+    }
 }

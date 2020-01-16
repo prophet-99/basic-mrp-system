@@ -181,8 +181,16 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void resetData(){
+        
+        ComponenteLogic.resetData();
+        PMaestroLogic.resetData();
+    }
+    
     private void jButton_solActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_solActionPerformed
-       
+        
+        this.resetData();
+        
         //GENERA PNN Y PNB
         PMaestro planM= new PMaestro();
         planM.setnPeriodos(this.periodos);

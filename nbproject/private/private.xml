@@ -5,9 +5,8 @@
         <group>
             <file>file:/C:/Users/Alex/Desktop/Proyecto%20Productivos/mrp_basic/src/entity/Componente.java</file>
             <file>file:/C:/Users/Alex/Desktop/Proyecto%20Productivos/mrp_basic/src/vistas/Princ_RegistroInventario.java</file>
-            <file>file:/C:/Users/Alex/Desktop/Proyecto%20Productivos/mrp_basic/src/logic/RegistroLogic.java</file>
             <file>file:/C:/Users/Alex/Desktop/Proyecto%20Productivos/mrp_basic/src/entity/Tiempo.java</file>
-            <file>file:/C:/Users/Alex/Desktop/Proyecto%20Productivos/mrp_basic/src/logic/ComponenteLogic.java</file>
+            <file>file:/C:/Users/Alex/Desktop/Proyecto%20Productivos/mrp_basic/src/logic/NNetasLogic.java</file>
         </group>
     </open-files>
 </project-private>

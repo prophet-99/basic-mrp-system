@@ -7,6 +7,7 @@ import entity.Componente;
 import entity.PMaestro;
 import java.io.FileOutputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import javax.swing.JOptionPane;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -115,8 +116,8 @@ public class NNetasLogic {
                 }
             }
            //SECCION RECEPCIONES PROG
-           XSSFRow ex = sheet1.createRow(col + (++patron));
-           cell = ex.createCell(4);
+           XSSFRow rp = sheet1.createRow(col + (++patron));
+           cell = rp.createCell(4);
            cell.setCellValue(rowHeaders[1]);
            
            //SECCION DISPONIBLE ESTIM
@@ -124,21 +125,112 @@ public class NNetasLogic {
            cell = de.createCell(4);
            cell.setCellValue(rowHeaders[2]);
            //SETEANDO LA DATA PARA OPERAR
-            for (int i = 0; i < rowHeaders.length; i++) {
+           Double StockDisponible = nb.getCell(1).getNumericCellValue();
+            for (int i = 0; i < masterP.getnPeriodos(); i++) {
                 
-                cell = de.createCell(5);
-                cell.setCellFormula("B" + (col+patron-1));
+                Map<String, Integer>pedPendientes = ComponenteLogic.getLstComponentes().get(col).getPed_pendientes_recibir();
+                
+                if(pedPendientes != null){
+                for (Entry<String, Integer> e : pedPendientes.entrySet()) {
+                    
+                    Integer periodo = Integer.parseInt(e.getKey());
+                    if(periodo == (i+1)){
+                    
+                        cell = rp.createCell(i + 5);
+                        cell.setCellValue(e.getValue());
+                    }
+                  }
+                }
+                
+                XSSFCell cellNB = nb.getCell(i + 5);
+                XSSFCell cellRP = rp.getCell(i + 5);
+                cell = de.createCell(i + 5);
+                cell.setCellValue(StockDisponible);
+                
+                if(cellNB == null){
+                    
+                    cell = de.createCell(i + 5);
+                    cell.setCellValue(StockDisponible);
+                    
+                    if(cellRP != null){
+                        StockDisponible += cellRP.getNumericCellValue();
+                    }
+                                        
+                }else{
+                    Double nBrut = cellNB.getNumericCellValue();
+                    Double dEstim = cell.getNumericCellValue();
+                    
+                    cell = de.createCell(5 + i);
+                    
+                    if(cellRP != null){
+                        Double recep_progrm = cellRP.getNumericCellValue();
+                        if((dEstim + recep_progrm)-nBrut > 0){
+                            cell.setCellValue(StockDisponible);
+                            StockDisponible = (dEstim + recep_progrm)-nBrut;
+                        }else{
+                            cell.setCellValue(StockDisponible);
+                            StockDisponible = 0.0;
+                        }
+                        
+                    }else{
+                        if((dEstim - nBrut) > 0){
+                            cell.setCellValue(StockDisponible);
+                            StockDisponible = dEstim-nBrut;
+                        }else{
+                            cell.setCellValue(StockDisponible);
+                            StockDisponible = 0.0;
+                        }
+                    }  
+                }
             }
            
            //SECCION NEC NETAS
            XSSFRow nn = sheet1.createRow(col + (++patron));
            cell = nn.createCell(4);
            cell.setCellValue(rowHeaders[3]);
+           //Seteando la data
+           for (int i = 0; i < masterP.getnPeriodos(); i++) {
+             
+                   XSSFCell cellBruta = nb.getCell(i+5);
+                   XSSFCell cellRecep = rp.getCell(i+5);
+                   
+                   if(cellBruta != null & cellRecep == null){
+                       
+                       Double neceBrut = nb.getCell(i+5).getNumericCellValue();
+                       Double stockDisp = de.getCell(i+5).getNumericCellValue();
+                       
+                       if(neceBrut-stockDisp > 0){
+                           cell = nn.createCell(i+5);
+                           cell.setCellValue(neceBrut - stockDisp);
+                       }
+                   }
+                   
+                   if(cellBruta != null & cellRecep != null){
+                       
+                       Double neceBrut = nb.getCell(i+5).getNumericCellValue();
+                       Double stockDisp = de.getCell(i+5).getNumericCellValue();
+                       Double recepProg = rp.getCell(i+5).getNumericCellValue();
+                       
+                       if((neceBrut - (stockDisp+recepProg)) > 0){
+                           cell = nn.createCell(i+5);
+                           cell.setCellValue(neceBrut - (stockDisp+recepProg));
+                       }
+                   }
+           }
            
            //SECCION RECEPC ORDEN
            XSSFRow ro = sheet1.createRow(col + (++patron));
            cell = ro.createCell(4);
            cell.setCellValue(rowHeaders[4]);
+           //seteando la data
+            for (int i = 0; i < masterP.getnPeriodos(); i++) {
+                XSSFCell cellNn = nn.getCell(i+5);
+                
+                if(cellNn != null){
+                cell = ro.createCell(i+5);
+                cell.setCellValue(cellNn.getNumericCellValue());
+                }
+            }
            
            //SECCION LANZ ORDEN
            XSSFRow lo = sheet1.createRow(col + (++patron));

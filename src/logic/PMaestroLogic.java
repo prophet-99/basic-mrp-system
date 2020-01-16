@@ -24,4 +24,9 @@ public class PMaestroLogic {
 
         return PMaestroDAO.getLstPMaestro();
     }   
+    
+    public static void resetData(){
+    
+        PMaestroDAO.resetData();
+    }
 }
