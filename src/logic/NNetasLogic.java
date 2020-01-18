@@ -227,8 +227,8 @@ public class NNetasLogic {
                 XSSFCell cellNn = nn.getCell(i+5);
                 
                 if(cellNn != null){
-                cell = ro.createCell(i+5);
-                cell.setCellValue(cellNn.getNumericCellValue());
+                    cell = ro.createCell(i+5);
+                    cell.setCellValue(cellNn.getNumericCellValue());
                 }
             }
            
@@ -236,6 +236,23 @@ public class NNetasLogic {
            XSSFRow lo = sheet1.createRow(col + (++patron));
            cell = lo.createCell(4);
            cell.setCellValue(rowHeaders[5]);
+           //seteando la data
+            XSSFRow prd1 = sheet1.getRow(1);
+            Integer VPrd1 = Integer.parseInt(prd1.getCell(5).getStringCellValue().substring(1));
+            for (int i = 0; i < masterP.getnPeriodos(); i++) {
+                XSSFCell cellNn = nn.getCell(i+5);
+                
+                if(cellNn != null){
+                    Double vCellNn = cellNn.getNumericCellValue();
+                    Integer plazo = (int)nb.getCell(0).getNumericCellValue();
+                    
+                    if(prd1.getCell(i+5-plazo) != null)
+                        if(VPrd1 <= Integer.parseInt(prd1.getCell(i+5-plazo).getStringCellValue().substring(1))){
+                            cell = lo.createCell((i+5)-plazo);
+                            cell.setCellValue(vCellNn);
+                        }        
+                }
+            }
         }
         
         //Crear Excel
