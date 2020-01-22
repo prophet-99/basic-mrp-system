@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.swing.JOptionPane;
 import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -64,6 +65,7 @@ public class NNetasLogic {
                                 "RECEPCIÓN DE ORDEN", "LANZAMIENTO DE ORDEN"};
         
         int patron = 2;
+        int aum2 = 7;
         for (int col = 0; col < (masterP.getnComponentes()); col++) {
            
            //COMBINACION DE CELDAS PLAZO-DISPONIBLE...
@@ -96,7 +98,7 @@ public class NNetasLogic {
             for (int i = 0; i < masterP.getnPeriodos(); i++) {
                 
                 boolean band = (lstProd_req.get(i)!= null)?true:false;
-                    
+                //Plan maestro, solo primer articulo    
                 if(band){
                    
                     for (Entry<String, Integer> e : lstProd_req.get(i).getCant_prod().entrySet()) {
@@ -115,6 +117,34 @@ public class NNetasLogic {
                     }
                 }
             }
+            //ALGORITMO OJOOOOO
+             int aum = 2;
+                    for (int j = 0; j < masterP.getnComponentes()-1; j++) {
+                        XSSFRow rowComp = sheet1.getRow(j+aum);
+                        
+                        if(rowComp != null){
+                        String codArticulo = rowComp.getCell(3).getStringCellValue();
+                        //Compara el componente padre con el componente del articulo
+                        if(lstComponentes.get(col).getcPadre().equals(codArticulo)){
+                            XSSFRow lOrdenPadre = sheet1.getRow(j+aum+5);
+                            
+                            for (int k = 0; k < masterP.getnPeriodos(); k++) {
+                                if(lOrdenPadre.getCell(k+5) != null){
+                                   Double vComPadre = lOrdenPadre.getCell(k+5).getNumericCellValue();
+                                   
+                                   XSSFRow rowHijo = sheet1.getRow(col+aum2);
+                                    System.out.println("--<" + col + aum2);
+                                   XSSFCell cellComp = rowHijo.createCell(k+5);
+                  
+                                   cellComp.setCellValue(vComPadre);
+                                }
+                            }
+                             aum2+=6;
+                        }
+                      }
+                        aum+=5;
+                    }
+                    
            //SECCION RECEPCIONES PROG
            XSSFRow rp = sheet1.createRow(col + (++patron));
            cell = rp.createCell(4);
@@ -128,10 +158,9 @@ public class NNetasLogic {
            Double StockDisponible = nb.getCell(1).getNumericCellValue();
             for (int i = 0; i < masterP.getnPeriodos(); i++) {
                 
-                Map<String, Integer>pedPendientes = ComponenteLogic.getLstComponentes().get(col).getPed_pendientes_recibir();
-                
-                if(pedPendientes != null){
-                for (Entry<String, Integer> e : pedPendientes.entrySet()) {
+              if(ComponenteLogic.getLstComponentes().get(col).getLstPed_pendientes_recibir() != null){
+                for (Map<String, Integer> pedPendientes : ComponenteLogic.getLstComponentes().get(col).getLstPed_pendientes_recibir()) {
+                    for (Entry<String, Integer> e : pedPendientes.entrySet()) {
                     
                     Integer periodo = Integer.parseInt(e.getKey());
                     if(periodo == (i+1)){
@@ -141,6 +170,7 @@ public class NNetasLogic {
                     }
                   }
                 }
+               }
                 
                 XSSFCell cellNB = nb.getCell(i + 5);
                 XSSFCell cellRP = rp.getCell(i + 5);

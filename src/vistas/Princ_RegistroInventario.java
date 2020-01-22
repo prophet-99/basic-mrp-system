@@ -7,14 +7,13 @@ package vistas;
 
 import entity.Componente;
 import entity.PMaestro;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import javax.swing.JOptionPane;
 import javax.swing.table.TableColumnModel;
 import logic.ComponenteLogic;
 import logic.NNetasLogic;
 import logic.PMaestroLogic;
-import logic.RegistroLogic;
+import logic.ModelRegistro;
 
 /**
  *
@@ -201,22 +200,31 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
             Componente component = new Componente();
             component.setNombre((String)jTableInput.getValueAt(i, 0));
             component.setNivel(Integer.parseInt((String)jTableInput.getValueAt(i, 1)));
-            component.setTiempo_entrega(Integer.parseInt((String)jTableInput.getValueAt(i, 2)));
-            component.setStock_disponible(Integer.parseInt((String)jTableInput.getValueAt(i, 3)));
+            component.setcPadre((String)jTableInput.getValueAt(i, 2));
+            component.setTiempo_entrega(Integer.parseInt((String)jTableInput.getValueAt(i, 3)));
+            component.setStock_disponible(Integer.parseInt((String)jTableInput.getValueAt(i, 4)));
             
             if(JOptionPane.showConfirmDialog(this, "¿Tiene Pedidos pendientes para el componente "+(i+1)+"?")==JOptionPane.OK_OPTION){
             
-                Integer pedido = Integer.parseInt(
-                                 JOptionPane.showInputDialog(this, "Ingrese el Stock", "1")
+                Integer nPed = Integer.parseInt(
+                               JOptionPane.showInputDialog(this, "Ingrese el número de pedidos pendientes para el componente", "1")
+                               );
+                
+                List<Map<String,Integer>> lstPed_pendientes_recibir = new ArrayList<>();
+                for (int j = 0; j < nPed; j++) {
+                    
+                    Integer pedido = Integer.parseInt(
+                                 JOptionPane.showInputDialog(this, "Ingrese el Stock que recibirá", "1")
                                  );
+                    
+                    String periodo = JOptionPane.showInputDialog(this, "Ingrese el Periodo en el que recibirá el pedido", "1");
+                    
+                    Map<String, Integer> pedPendiente = new HashMap<>();
+                    pedPendiente.put(periodo, pedido);
                 
-                String periodo = JOptionPane.showInputDialog(this, "Ingrese el Periodo", "1");
-                
-                Map<String, Integer> pedPendiente = new HashMap<>();
-                pedPendiente.put(periodo, pedido);
-                
-                component.setPed_pendientes_recibir(pedPendiente);
-                
+                    lstPed_pendientes_recibir.add(pedPendiente);
+                }
+                    component.setLstPed_pendientes_recibir(lstPed_pendientes_recibir);
             }
             
             ComponenteLogic.insertarComponente(component);
@@ -224,12 +232,12 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
         
         for (int i = 0; i < this.periodos; i++) {
             
-          if(jTableInput.getValueAt(0, (i+4))!= null){
+          if(jTableInput.getValueAt(0, (i+5))!= null){
               
                 PMaestro pMaestro = new PMaestro();
                 Map<String, Integer> prod_requer = new HashMap<>();
                 prod_requer.put(String.valueOf((i+1)) , 
-                                Integer.parseInt((String)jTableInput.getValueAt(0, (i+4))));
+                                Integer.parseInt((String)jTableInput.getValueAt(0, (i+5))));
                
                 pMaestro.setCant_prod(prod_requer);
                 PMaestroLogic.setProd_requer(pMaestro);
@@ -245,6 +253,7 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
 
     private void jButton_aceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_aceptActionPerformed
         
+        
         this.periodos = Integer.parseInt(jText_Period.getText());
         this.componentes = Integer.parseInt(jText_comp.getText());
         
@@ -253,12 +262,13 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
         planMaster.setnPeriodos(this.periodos);
         PanelRegistro.setVisible(true);
         
-        jTableInput.setModel(new RegistroLogic().modelRegistroInv(planMaster));
-         
         TableColumnModel columnModel = jTableInput.getColumnModel();
+        //Set Modelo de la tabla
+        jTableInput.setModel(ModelRegistro.modelRegistroInv(planMaster));
+        ModelRegistro.setJComboTable(jTableInput, columnModel.getColumn(2));
 
         for (int i = 0; i < columnModel.getColumnCount(); i++) {
-            columnModel.getColumn(i).setPreferredWidth(100);
+            columnModel.getColumn(i).setPreferredWidth(115);
         }
         
         jTableInput.setAutoResizeMode(jTableInput.AUTO_RESIZE_OFF);

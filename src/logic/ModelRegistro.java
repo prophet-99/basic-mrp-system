@@ -6,8 +6,15 @@ package logic;
 
 import entity.PMaestro;
 import java.util.*;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-public class RegistroLogic {
+import javax.swing.table.TableColumn;
+public class ModelRegistro {
+   
+    private static List<String> lstNombComp;
     
     public static DefaultTableModel modelRegistroInv(PMaestro planMaster){
         
@@ -16,9 +23,10 @@ public class RegistroLogic {
         List<String> headersDinam = new ArrayList<>();
         headersDinam.add("Código");
         headersDinam.add("Nivel");
+        headersDinam.add("Componente-Padre");
         headersDinam.add("Tiempo-Entrega");
         headersDinam.add("Stock Actual");
-        
+              
         for (int i = 0; i < planMaster.getnPeriodos(); i++) {
             
             headersDinam.add("P" + String.valueOf(i+1));
@@ -28,16 +36,30 @@ public class RegistroLogic {
         
         modelo.setColumnIdentifiers(labels);
         
-        List<String> bodyDinam = new ArrayList<>();
-       
+        lstNombComp = new ArrayList<>();
         for (int i = 0; i < planMaster.getnComponentes(); i++) {
             
-            String[] headers = {"C" + String.valueOf(i+1)};
-           
+            String[] headers = {"C" + String.valueOf(i+1), "", "Seleccionar Padre"};
+            lstNombComp.add(headers[0]);
+            
             modelo.addRow(headers);
         }
-       
+          
         return modelo;
+    }
+    
+    public static void setJComboTable(JTable table, TableColumn columna){
+    
+        //combo de padres
+        JComboBox<String> cPadre = new JComboBox<>();
+        for (String componente : lstNombComp) {
+  
+            cPadre.addItem(componente);          
+        }
+      
+        columna.setCellEditor(new DefaultCellEditor(cPadre));
+        DefaultTableCellRenderer render = new DefaultTableCellRenderer();
+        columna.setCellRenderer(render);
     }
     
 }

@@ -3,15 +3,16 @@ package entity;
  * 
  * @author Alexander Avila <alexanderavilab at gmail.com>
  */
-import java.util.Map;
+import java.util.*;
 
 public class Componente {
     
     private Integer nivel;
     private String nombre;
+    private String cPadre;
     private Integer stock_disponible;
     private Integer tiempo_entrega;
-    private Map<String, Integer> ped_pendientes_recibir;
+    private List<Map<String,Integer>> lstPed_pendientes_recibir;
 
     public Integer getTiempo_entrega() {
         return tiempo_entrega;
@@ -21,14 +22,14 @@ public class Componente {
         this.tiempo_entrega = tiempo_entrega;
     }
 
-    public Map<String, Integer> getPed_pendientes_recibir() {
-        return ped_pendientes_recibir;
+    public List<Map<String, Integer>> getLstPed_pendientes_recibir() {
+        return lstPed_pendientes_recibir;
     }
 
-    public void setPed_pendientes_recibir(Map<String, Integer> ped_pendientes_recibir) {
-        this.ped_pendientes_recibir = ped_pendientes_recibir;
+    public void setLstPed_pendientes_recibir(List<Map<String, Integer>> lstPed_pendientes_recibir) {
+        this.lstPed_pendientes_recibir = lstPed_pendientes_recibir;
     }
-
+        
     public Integer getNivel() {
         return nivel;
     }
@@ -53,4 +54,11 @@ public class Componente {
         this.stock_disponible = stock_disponible;
     }
     
+    public String getcPadre() {
+        return cPadre;
+    }
+
+    public void setcPadre(String cPadre) {
+        this.cPadre = cPadre;
+    }
 }
