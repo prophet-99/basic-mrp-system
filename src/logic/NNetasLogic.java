@@ -134,7 +134,7 @@ public class NNetasLogic {
                                         Double vComPadre = lOrdenPadre.getCell(k+5).getNumericCellValue();
    
                                         XSSFCell cellComp = nb.createCell(k+5);
-                                        cellComp.setCellValue(vComPadre);
+                                        cellComp.setCellValue(vComPadre*lstComponentes.get(col).getuXComponent());
                                     }
                                 }
                             }
