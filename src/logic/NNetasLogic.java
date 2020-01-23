@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.swing.JOptionPane;
 import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -25,12 +23,15 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class NNetasLogic {
 
     
-    public static boolean generarReporte(PMaestro masterP, List<Componente> lstComponentes){
+    public static boolean generarReporte(PMaestro masterP, List<Componente> lstComponentes, String rutaGuardado){
      
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet1 = workbook.createSheet("NNetas");
-        XSSFSheet sheet2 = workbook.createSheet("NBrutas");
         
+        XSSFSheet sheet = workbook.createSheet("NBrutas");
+        XSSFSheet sheet1 = workbook.createSheet("NNetas");
+        
+        sheet1.setColumnWidth(4, 7000);
+        sheet.setColumnWidth(2, 8000);
         XSSFCell cell = null;
         
         String[] colH1 = {"PLAZO", "DISPONIBLE", "CÓDIGO-NIVEL", "CÓDIGO-ARTICULO",
@@ -93,7 +94,8 @@ public class NNetasLogic {
            cell = nb.createCell(4);
            cell.setCellValue(rowHeaders[0]);
            //crea los datos del plan maestro(periodo)
-           List<PMaestro> lstProd_req = PMaestroLogic.getLstProd_requer();
+            
+            List<PMaestro> lstProd_req = PMaestroLogic.getLstProd_requer();
             for (int i = 0; i < masterP.getnPeriodos(); i++) {
                 
                 boolean band = (lstProd_req.get(i)!= null)?true:false;
@@ -135,6 +137,9 @@ public class NNetasLogic {
    
                                         XSSFCell cellComp = nb.createCell(k+5);
                                         cellComp.setCellValue(vComPadre*lstComponentes.get(col).getuXComponent());
+                                        
+                                        //ESTILO DE LA CELDA
+                                        cellComp.setCellStyle(lOrdenPadre.getCell(k+5).getCellStyle());
                                     }
                                 }
                             }
@@ -264,9 +269,15 @@ public class NNetasLogic {
            XSSFRow lo = sheet1.createRow(col + (++patron));
            cell = lo.createCell(4);
            cell.setCellValue(rowHeaders[5]);
+           XSSFCellStyle estiloBord = workbook.createCellStyle();
+           estiloBord.setBorderBottom(BorderStyle.THICK);
+           estiloBord.setBottomBorderColor(IndexedColors.GREY_80_PERCENT.getIndex());
+           cell.setCellStyle(estiloBord);
            //seteando la data
             XSSFRow prd1 = sheet1.getRow(1);
             Integer VPrd1 = Integer.parseInt(prd1.getCell(5).getStringCellValue().substring(1));
+            
+            XSSFCellStyle styleLO = workbook.createCellStyle();
             for (int i = 0; i < masterP.getnPeriodos(); i++) {
                 XSSFCell cellNn = nn.getCell(i+5);
                 
@@ -278,13 +289,190 @@ public class NNetasLogic {
                         if(VPrd1 <= Integer.parseInt(prd1.getCell(i+5-plazo).getStringCellValue().substring(1))){
                             cell = lo.createCell((i+5)-plazo);
                             cell.setCellValue(vCellNn);
+                            
+                            //ESTILO CELDA
+                            int r  = (int) (Math.random() * 155) + 100;
+                            int g  = (int) (Math.random() * 185) + 70;
+                            int b  = (int) (Math.random() * 185) + 70;
+                            styleLO.setFillForegroundColor(new XSSFColor(new java.awt.Color(r, g, b)));
+                            styleLO.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                            styleLO.setBorderBottom(BorderStyle.THICK);
+                            styleLO.setBottomBorderColor(IndexedColors.GREY_80_PERCENT.getIndex());
+                            cell.setCellStyle(styleLO);
                         }        
                 }
             }
+            //SETEO ESTILOS DE BORDES INFERIORES
+            XSSFCellStyle estiloBorde = workbook.createCellStyle();
+            estiloBorde.setBorderBottom(BorderStyle.THICK);
+            estiloBorde.setBottomBorderColor(IndexedColors.GREY_80_PERCENT.getIndex());
+            
+            lo.setRowStyle(estiloBorde);         
         }
         
-        //Crear Excel
-        try(FileOutputStream out = new FileOutputStream("NB.xlsx")){
+        
+        
+        //SECCION NECESIDADES BRUTAS
+        XSSFCell cellNB = null;
+        
+        String[] colHeaders = {"N°", "CÓDIGO-ARTICULO", " "};
+        
+        XSSFRow rowBrutHeader = sheet.createRow(0);
+        
+        for (int i = 0; i < colHeaders.length; i++) {
+            sheet.addMergedRegion(new CellRangeAddress(0, 1, i, i));
+            cellNB = rowBrutHeader.createCell(i);
+            cellNB.setCellValue(colHeaders[i]);
+        }
+       
+       sheet.addMergedRegion(new CellRangeAddress(0, 0, 3, (2 + masterP.getnPeriodos()) ));
+       cellNB =  rowBrutHeader.createCell(3);
+       cellNB.setCellValue("PERIODOS");
+       
+       XSSFRow rowBrutHeader2 = sheet.createRow(1);
+      
+       String[] colHeaders2 = new String[masterP.getnPeriodos()];
+       for (int i = 0; i < masterP.getnPeriodos(); i++) {
+            
+            colHeaders2[i] = String.valueOf("P" + (i+1));
+            
+            cellNB = rowBrutHeader2.createCell(i+3);
+            cellNB.setCellValue(colHeaders2[i]);
+        }
+        
+       int patronNB = 2;
+        for (int comp = 0; comp < masterP.getnComponentes(); comp++) {
+            
+            //Combinan las celdas
+            sheet.addMergedRegion(new CellRangeAddress(comp + patronNB, comp + patronNB+1, 0, 0));
+            sheet.addMergedRegion(new CellRangeAddress(comp + patronNB, comp + patronNB+1, 1, 1));
+            
+            //Setear data de Nª-codigo-labels verticales
+                XSSFRow fechRequer = sheet.createRow(comp + patronNB);
+                cellNB = fechRequer.createCell(0);
+                cellNB.setCellValue(comp+1);
+                
+                cellNB = fechRequer.createCell(1);
+                cellNB.setCellValue(lstComponentes.get(comp).getNombre());
+            
+                cellNB = fechRequer.createCell(2);
+                cellNB.setCellValue("FECHA REQUERIDA DE LA ORDEN");
+                 
+                List<PMaestro> lstProd_req = PMaestroLogic.getLstProd_requer();
+            for (int i = 0; i < masterP.getnPeriodos(); i++) {
+                
+                boolean band = (lstProd_req.get(i)!= null)?true:false;
+                //Plan maestro, solo primer articulo    
+                if(band){
+                   
+                    for (Entry<String, Integer> e : lstProd_req.get(i).getCant_prod().entrySet()) {
+                       
+                     if(comp != 0) break;
+                     
+                      if(e != null){
+                        XSSFCell celda = sheet.getRow(1).getCell(i+3);
+                        String idt = celda.getStringCellValue().substring(1);
+                          
+                        if(e.getKey().equals(idt)){
+                            
+                            cellNB = fechRequer.createCell(i+3);
+                            cellNB.setCellValue(e.getValue());
+                            
+                            //ESTILO CELDA
+                            int r  = (int) (Math.random() * 155) + 100;
+                            int g  = (int) (Math.random() * 185) + 70;
+                            int b  = (int) (Math.random() * 185) + 70;
+                            //ESTILO DE LA CELDA
+                            XSSFCellStyle stylePadre = workbook.createCellStyle();
+                            
+                            stylePadre.setFillForegroundColor(new XSSFColor(new java.awt.Color(r, g, b)));
+                            stylePadre.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                            cellNB.setCellStyle(stylePadre);
+                        }
+                      }
+                    }
+                }
+                    //algoritmo generador de procesos a partir del segundo componente
+                if(comp != 0){
+                
+                int aum = 2;
+                for (int j = 0; j < masterP.getnComponentes()-1; j++){
+                    XSSFRow rowCompPadre = sheet.getRow(j+aum);
+                        
+                        if(rowCompPadre != null){
+                        String codArticulo = rowCompPadre.getCell(1).getStringCellValue();
+                        //Compara el componente padre con el componente del articulo
+                            if(lstComponentes.get(comp).getcPadre().equals(codArticulo)){
+                                XSSFRow fechLanzPadre = sheet.getRow(j+aum+1);
+                            
+                                for (int k = 0; k < masterP.getnPeriodos(); k++) {
+                                    if(fechLanzPadre.getCell(k+3) != null){
+                                        Double vComPadre = fechLanzPadre.getCell(k+3).getNumericCellValue();
+                                        
+                                        XSSFCell cellComp = fechRequer.createCell(k+3);
+                                        cellComp.setCellValue(vComPadre*lstComponentes.get(comp).getuXComponent());
+                                        
+                                       //ESTILO DE LA CELDA
+                                       cellComp.setCellStyle(fechLanzPadre.getCell(k+3).getCellStyle());
+                                    }
+                                }
+                            }
+                        }
+                        aum+=1;
+                    }
+                }
+            }
+             //Setear data de fecha de lanzamiento
+                XSSFRow fechLanz = sheet.createRow(comp + (++patronNB));
+                cellNB = fechLanz.createCell(2);
+                cellNB.setCellValue("FECHA DE LANZAMIENTO DE LA ORDEN");
+                XSSFCellStyle estiloBord = workbook.createCellStyle();
+                estiloBord.setBorderBottom(BorderStyle.THICK);
+                estiloBord.setBottomBorderColor(IndexedColors.GREY_80_PERCENT.getIndex());
+                cellNB.setCellStyle(estiloBord);
+                //seteando la data
+                XSSFRow prd1 = sheet.getRow(1);
+                Integer VPrd1 = Integer.parseInt(prd1.getCell(3).getStringCellValue().substring(1));
+                 
+                //ESTILO DE LA CELDA
+                XSSFCellStyle styleHijo = workbook.createCellStyle();
+                
+                for (int i = 0; i < masterP.getnPeriodos(); i++) {
+                    XSSFCell cellfechReq = fechRequer.getCell(i+3);
+                
+                    if(cellfechReq != null){
+                        Double vCellfechReq = cellfechReq.getNumericCellValue();
+                        Integer plazo = lstComponentes.get(comp).getTiempo_entrega();
+                    
+                    if(prd1.getCell(i+3-plazo) != null)
+                        if(VPrd1 <= Integer.parseInt(prd1.getCell(i+3-plazo).getStringCellValue().substring(1))){
+                            
+                            cellNB = fechLanz.createCell((i+3)-plazo);
+                            cellNB.setCellValue(vCellfechReq);
+                            
+                            //ESTILO DE LA CELDA
+                            XSSFCellStyle estiloTotal = workbook.createCellStyle();
+                            estiloTotal.cloneStyleFrom(cellfechReq.getCellStyle());
+                            estiloTotal.setBorderBottom(BorderStyle.THICK);
+                            estiloTotal.setBottomBorderColor(IndexedColors.GREY_80_PERCENT.getIndex());
+                            
+                            cellNB.setCellStyle(estiloTotal);
+                        }        
+                    }
+            }
+             
+            //SETEO ESTILOS DE BORDES INFERIORES
+            XSSFCellStyle estiloBorde = workbook.createCellStyle();
+            estiloBorde.setBorderBottom(BorderStyle.THICK);
+            estiloBorde.setBottomBorderColor(IndexedColors.GREY_80_PERCENT.getIndex());
+            
+            fechLanz.setRowStyle(estiloBorde); 
+        }
+      
+   
+        
+        //Crear Excel 
+        try(FileOutputStream out = new FileOutputStream(rutaGuardado + "/MRP.xlsx")){
             
             workbook.write(out);
         }catch(Exception ex){

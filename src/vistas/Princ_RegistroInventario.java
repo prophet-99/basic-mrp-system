@@ -7,7 +7,9 @@ package vistas;
 
 import entity.Componente;
 import entity.PMaestro;
+import java.io.File;
 import java.util.*;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.TableColumnModel;
 import logic.ComponenteLogic;
@@ -248,10 +250,19 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
         
         }
         
+        //Genero JFileChooser
+        JFileChooser chooser = new JFileChooser();
         
-        NNetasLogic.generarReporte(planM, ComponenteLogic.getLstComponentes());
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int seleccion = chooser.showOpenDialog(this);
+        
+        if(seleccion == JFileChooser.APPROVE_OPTION){
+            File file = chooser.getSelectedFile();
+            
+            NNetasLogic.generarReporte(planM, ComponenteLogic.getLstComponentes(), file.getAbsolutePath());
+        }   
     }//GEN-LAST:event_jButton_solActionPerformed
-
+    
     private void jButton_aceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_aceptActionPerformed
         
         
