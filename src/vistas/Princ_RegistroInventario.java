@@ -200,9 +200,10 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
             Componente component = new Componente();
             component.setNombre((String)jTableInput.getValueAt(i, 0));
             component.setNivel(Integer.parseInt((String)jTableInput.getValueAt(i, 1)));
-            component.setcPadre((String)jTableInput.getValueAt(i, 2));
-            component.setTiempo_entrega(Integer.parseInt((String)jTableInput.getValueAt(i, 3)));
-            component.setStock_disponible(Integer.parseInt((String)jTableInput.getValueAt(i, 4)));
+            component.setuXComponent(Integer.parseInt((String)jTableInput.getValueAt(i, 2)));
+            component.setcPadre((String)jTableInput.getValueAt(i, 3));
+            component.setTiempo_entrega(Integer.parseInt((String)jTableInput.getValueAt(i, 4)));
+            component.setStock_disponible(Integer.parseInt((String)jTableInput.getValueAt(i, 5)));
             
             if(JOptionPane.showConfirmDialog(this, "¿Tiene Pedidos pendientes para el componente "+(i+1)+"?")==JOptionPane.OK_OPTION){
             
@@ -232,12 +233,12 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
         
         for (int i = 0; i < this.periodos; i++) {
             
-          if(jTableInput.getValueAt(0, (i+5))!= null){
+          if(jTableInput.getValueAt(0, (i+6))!= null){
               
                 PMaestro pMaestro = new PMaestro();
                 Map<String, Integer> prod_requer = new HashMap<>();
                 prod_requer.put(String.valueOf((i+1)) , 
-                                Integer.parseInt((String)jTableInput.getValueAt(0, (i+5))));
+                                Integer.parseInt((String)jTableInput.getValueAt(0, (i+6))));
                
                 pMaestro.setCant_prod(prod_requer);
                 PMaestroLogic.setProd_requer(pMaestro);
@@ -265,7 +266,7 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
         TableColumnModel columnModel = jTableInput.getColumnModel();
         //Set Modelo de la tabla
         jTableInput.setModel(ModelRegistro.modelRegistroInv(planMaster));
-        ModelRegistro.setJComboTable(jTableInput, columnModel.getColumn(2));
+        ModelRegistro.setJComboTable(jTableInput, columnModel.getColumn(3));
 
         for (int i = 0; i < columnModel.getColumnCount(); i++) {
             columnModel.getColumn(i).setPreferredWidth(115);

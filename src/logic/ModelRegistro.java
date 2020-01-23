@@ -23,6 +23,7 @@ public class ModelRegistro {
         List<String> headersDinam = new ArrayList<>();
         headersDinam.add("Código");
         headersDinam.add("Nivel");
+        headersDinam.add("Unidades por Componente");
         headersDinam.add("Componente-Padre");
         headersDinam.add("Tiempo-Entrega");
         headersDinam.add("Stock Actual");
@@ -39,7 +40,7 @@ public class ModelRegistro {
         lstNombComp = new ArrayList<>();
         for (int i = 0; i < planMaster.getnComponentes(); i++) {
             
-            String[] headers = {"C" + String.valueOf(i+1), "", "Seleccionar Padre"};
+            String[] headers = {"C" + String.valueOf(i+1), "", "", "Seleccionar Padre"};
             lstNombComp.add(headers[0]);
             
             modelo.addRow(headers);

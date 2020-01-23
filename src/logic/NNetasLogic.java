@@ -65,7 +65,6 @@ public class NNetasLogic {
                                 "RECEPCIÓN DE ORDEN", "LANZAMIENTO DE ORDEN"};
         
         int patron = 2;
-        int aum2 = 7;
         for (int col = 0; col < (masterP.getnComponentes()); col++) {
            
            //COMBINACION DE CELDAS PLAZO-DISPONIBLE...
@@ -117,34 +116,33 @@ public class NNetasLogic {
                     }
                 }
             }
-            //ALGORITMO OJOOOOO
+            //algoritmo generador de procesos a partir del segundo componente
+            if(col != 0){
+                
              int aum = 2;
-                    for (int j = 0; j < masterP.getnComponentes()-1; j++) {
-                        XSSFRow rowComp = sheet1.getRow(j+aum);
+                for (int j = 0; j < masterP.getnComponentes()-1; j++){
+                    XSSFRow rowCompPadre = sheet1.getRow(j+aum);
                         
-                        if(rowComp != null){
-                        String codArticulo = rowComp.getCell(3).getStringCellValue();
+                        if(rowCompPadre != null){
+                        String codArticulo = rowCompPadre.getCell(3).getStringCellValue();
                         //Compara el componente padre con el componente del articulo
-                        if(lstComponentes.get(col).getcPadre().equals(codArticulo)){
-                            XSSFRow lOrdenPadre = sheet1.getRow(j+aum+5);
+                            if(lstComponentes.get(col).getcPadre().equals(codArticulo)){
+                                XSSFRow lOrdenPadre = sheet1.getRow(j+aum+5);
                             
-                            for (int k = 0; k < masterP.getnPeriodos(); k++) {
-                                if(lOrdenPadre.getCell(k+5) != null){
-                                   Double vComPadre = lOrdenPadre.getCell(k+5).getNumericCellValue();
-                                   
-                                   XSSFRow rowHijo = sheet1.getRow(col+aum2);
-                                    System.out.println("--<" + col + aum2);
-                                   XSSFCell cellComp = rowHijo.createCell(k+5);
-                  
-                                   cellComp.setCellValue(vComPadre);
+                                for (int k = 0; k < masterP.getnPeriodos(); k++) {
+                                    if(lOrdenPadre.getCell(k+5) != null){
+                                        Double vComPadre = lOrdenPadre.getCell(k+5).getNumericCellValue();
+   
+                                        XSSFCell cellComp = nb.createCell(k+5);
+                                        cellComp.setCellValue(vComPadre);
+                                    }
                                 }
                             }
-                             aum2+=6;
                         }
-                      }
                         aum+=5;
-                    }
-                    
+                }
+            }
+            
            //SECCION RECEPCIONES PROG
            XSSFRow rp = sheet1.createRow(col + (++patron));
            cell = rp.createCell(4);

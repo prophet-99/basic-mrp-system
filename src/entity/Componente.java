@@ -10,10 +10,19 @@ public class Componente {
     private Integer nivel;
     private String nombre;
     private String cPadre;
+    private Integer uXComponent;
     private Integer stock_disponible;
     private Integer tiempo_entrega;
     private List<Map<String,Integer>> lstPed_pendientes_recibir;
 
+    public Integer getuXComponent() {
+        return uXComponent;
+    }
+
+    public void setuXComponent(Integer uXComponent) {
+        this.uXComponent = uXComponent;
+    }
+    
     public Integer getTiempo_entrega() {
         return tiempo_entrega;
     }
