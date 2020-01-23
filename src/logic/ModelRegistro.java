@@ -45,9 +45,9 @@ public class ModelRegistro {
             
             modelo.addRow(headers);
         }
-          
         return modelo;
     }
+    
     
     public static void setJComboTable(JTable table, TableColumn columna){
     
@@ -62,5 +62,6 @@ public class ModelRegistro {
         DefaultTableCellRenderer render = new DefaultTableCellRenderer();
         columna.setCellRenderer(render);
     }
+
     
 }

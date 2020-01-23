@@ -5,15 +5,23 @@
  */
 package vistas;
 
+import Utilidades.GestionCeldas;
+import Utilidades.GestionEncabezado;
 import entity.Componente;
 import entity.PMaestro;
+import java.awt.BorderLayout;
 import java.util.*;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableColumnModel;
 import logic.ComponenteLogic;
 import logic.NNetasLogic;
 import logic.PMaestroLogic;
 import logic.ModelRegistro;
+import javax.swing.table.JTableHeader;
+
 
 /**
  *
@@ -27,11 +35,16 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
     
     private static int periodos;
     private static int componentes;
+
     
     public Princ_RegistroInventario() {
+
+        
+        //COSA QUE YA ESTABA
         initComponents();
         PanelRegistro.setVisible(false);
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -61,6 +74,12 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
         jLabel1.setText("Introduzca el Número de Componentes");
 
         jLabel2.setText("Introduzca el Número de  Periodos");
+
+        jText_comp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jText_compActionPerformed(evt);
+            }
+        });
 
         jButton_acept.setText("ACEPTAR");
         jButton_acept.addActionListener(new java.awt.event.ActionListener() {
@@ -137,10 +156,10 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
         PanelRegistroLayout.setHorizontalGroup(
             PanelRegistroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelRegistroLayout.createSequentialGroup()
-                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 847, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(PanelRegistroLayout.createSequentialGroup()
-                .addGap(237, 237, 237)
+                .addGap(318, 318, 318)
                 .addComponent(jButton_sol)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -163,10 +182,10 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(PanelRegistro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(192, 192, 192)
                 .addComponent(PanelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(113, 113, 113))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -265,7 +284,18 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
         
         TableColumnModel columnModel = jTableInput.getColumnModel();
         //Set Modelo de la tabla
+            
         jTableInput.setModel(ModelRegistro.modelRegistroInv(planMaster));
+        
+        //PERSONALIZA EL ENCABEZADO
+        JTableHeader jtableHeader = jTableInput.getTableHeader();
+        jtableHeader.setDefaultRenderer(new GestionEncabezado());
+        jTableInput.setTableHeader(jtableHeader);
+      
+        //se asigna la tabla al scrollPane
+        scroll.setViewportView(jTableInput);
+        
+        
         ModelRegistro.setJComboTable(jTableInput, columnModel.getColumn(3));
 
         for (int i = 0; i < columnModel.getColumnCount(); i++) {
@@ -275,6 +305,11 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
         jTableInput.setAutoResizeMode(jTableInput.AUTO_RESIZE_OFF);
     }//GEN-LAST:event_jButton_aceptActionPerformed
 
+    private void jText_compActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jText_compActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jText_compActionPerformed
+       
+    
     /**
      * @param args the command line arguments
      */
