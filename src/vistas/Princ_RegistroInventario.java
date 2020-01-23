@@ -5,17 +5,28 @@
  */
 package vistas;
 
+import Utilidades.GestionCeldas;
+import Utilidades.GestionEncabezado;
 import entity.Componente;
 import entity.PMaestro;
 import java.io.File;
 import java.util.*;
 import javax.swing.JFileChooser;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.util.*;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableColumnModel;
 import logic.ComponenteLogic;
 import logic.NNetasLogic;
 import logic.PMaestroLogic;
 import logic.ModelRegistro;
+import javax.swing.table.JTableHeader;
+
 
 /**
  *
@@ -29,11 +40,19 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
     
     private static int periodos;
     private static int componentes;
+
+    private Toolkit miPantalla = Toolkit.getDefaultToolkit();
+    private Dimension miResolucion = miPantalla.getScreenSize();
+    private int altura = miResolucion.height;
+    private int anchura = miResolucion.width;
     
     public Princ_RegistroInventario() {
+
+        setLocation(anchura/4, altura/8);
         initComponents();
         PanelRegistro.setVisible(false);
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -55,6 +74,7 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
         scroll = new javax.swing.JScrollPane();
         jTableInput = new javax.swing.JTable();
         jButton_sol = new javax.swing.JButton();
+        jButtonSalir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -63,6 +83,12 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
         jLabel1.setText("Introduzca el Número de Componentes");
 
         jLabel2.setText("Introduzca el Número de  Periodos");
+
+        jText_comp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jText_compActionPerformed(evt);
+            }
+        });
 
         jButton_acept.setText("ACEPTAR");
         jButton_acept.addActionListener(new java.awt.event.ActionListener() {
@@ -75,24 +101,25 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
         PanelPrincipal.setLayout(PanelPrincipalLayout);
         PanelPrincipalLayout.setHorizontalGroup(
             PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelPrincipalLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addGap(167, 167, 167))
             .addGroup(PanelPrincipalLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(PanelPrincipalLayout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jText_Period, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap()
+                        .addGroup(PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(PanelPrincipalLayout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jText_Period, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(PanelPrincipalLayout.createSequentialGroup()
+                                .addGroup(PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jButton_acept)
+                                    .addComponent(jLabel1))
+                                .addGap(33, 33, 33)
+                                .addComponent(jText_comp, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(PanelPrincipalLayout.createSequentialGroup()
-                        .addGroup(PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton_acept)
-                            .addComponent(jLabel1))
-                        .addGap(33, 33, 33)
-                        .addComponent(jText_comp, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(75, Short.MAX_VALUE))
+                        .addGap(138, 138, 138)
+                        .addComponent(jLabel3)))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
         PanelPrincipalLayout.setVerticalGroup(
             PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,16 +161,25 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
             }
         });
 
+        jButtonSalir.setText("SALIR");
+        jButtonSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSalirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout PanelRegistroLayout = new javax.swing.GroupLayout(PanelRegistro);
         PanelRegistro.setLayout(PanelRegistroLayout);
         PanelRegistroLayout.setHorizontalGroup(
             PanelRegistroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelRegistroLayout.createSequentialGroup()
-                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(PanelRegistroLayout.createSequentialGroup()
-                .addGap(237, 237, 237)
+                .addGap(190, 190, 190)
                 .addComponent(jButton_sol)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonSalir)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         PanelRegistroLayout.setVerticalGroup(
@@ -151,9 +187,11 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
             .addGroup(PanelRegistroLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton_sol)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(PanelRegistroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton_sol)
+                    .addComponent(jButtonSalir))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         scroll.getAccessibleContext().setAccessibleName("");
@@ -168,7 +206,7 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(PanelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(113, 113, 113))
+                .addGap(139, 139, 139))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -276,7 +314,18 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
         
         TableColumnModel columnModel = jTableInput.getColumnModel();
         //Set Modelo de la tabla
+            
         jTableInput.setModel(ModelRegistro.modelRegistroInv(planMaster));
+        
+        //PERSONALIZA EL ENCABEZADO
+        JTableHeader jtableHeader = jTableInput.getTableHeader();
+        jtableHeader.setDefaultRenderer(new GestionEncabezado());
+        jTableInput.setTableHeader(jtableHeader);
+      
+        //se asigna la tabla al scrollPane
+        scroll.setViewportView(jTableInput);
+        
+        
         ModelRegistro.setJComboTable(jTableInput, columnModel.getColumn(3));
 
         for (int i = 0; i < columnModel.getColumnCount(); i++) {
@@ -286,6 +335,16 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
         jTableInput.setAutoResizeMode(jTableInput.AUTO_RESIZE_OFF);
     }//GEN-LAST:event_jButton_aceptActionPerformed
 
+    private void jText_compActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jText_compActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jText_compActionPerformed
+
+    private void jButtonSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalirActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_jButtonSalirActionPerformed
+       
+    
     /**
      * @param args the command line arguments
      */
@@ -324,6 +383,7 @@ public class Princ_RegistroInventario extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PanelPrincipal;
     private javax.swing.JPanel PanelRegistro;
+    private javax.swing.JButton jButtonSalir;
     private javax.swing.JButton jButton_acept;
     private javax.swing.JButton jButton_sol;
     private javax.swing.JLabel jLabel1;

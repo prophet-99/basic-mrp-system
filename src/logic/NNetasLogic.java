@@ -31,7 +31,7 @@ public class NNetasLogic {
         XSSFSheet sheet1 = workbook.createSheet("NNetas");
         
         sheet1.setColumnWidth(4, 7000);
-        sheet.setColumnWidth(2, 8000);
+        sheet.setColumnWidth(2, 8500);
         XSSFCell cell = null;
         
         String[] colH1 = {"PLAZO", "DISPONIBLE", "CÓDIGO-NIVEL", "CÓDIGO-ARTICULO",
